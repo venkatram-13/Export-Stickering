@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Export Sticker Sheet</title>
+<style>
+  :root{
+    --page-w: 210mm;
+    --page-h: 297mm;
+    --margin-top: 12.5mm;
+    --margin-side: 6mm;
+    --label-w: 64mm;
+    --label-h: 34mm;
+    --h-gap: 3mm;
+    --v-gap: 0mm;
+  }
+
+  * { box-sizing: border-box; }
+
+  body{
+    font-family: Arial, Helvetica, sans-serif;
+    background:#e9e9e9;
+    margin:0;
+    padding:20px;
+  }
+
+  /* ---------- Side-by-side layout (screen only) ---------- */
+  .layout{
+    display:flex;
+    align-items:flex-start;
+    justify-content:center;
+    gap:24px;
+    flex-wrap:wrap;
+  }
+
+  .page-wrap{
+    overflow:hidden;
+  }
+  .page{
+    transform-origin: top left;
+  }
+
+  /* ---------- Responsive / mobile ---------- */
+  @media (max-width: 900px){
+    body{ padding:12px; }
+    .layout{
+      flex-direction: column;
+      align-items: center;
+      gap:16px;
+    }
+    .toolbar{
+      width:100%;
+      max-width:480px;
+      flex:none;
+      padding:14px 16px;
+    }
+    .form-row{ gap:10px; }
+    .field{ flex:1 1 45%; min-width:0; }
+    .field input, .field select{ width:100%; min-width:0; }
+    .size-template{ flex-wrap:wrap; row-gap:8px; }
+    #printBtn{ width:100%; padding:12px; font-size:16px; }
+  }
+
+  /* ---------- Toolbar / form (screen only) ---------- */
+  .toolbar{
+    width: 320px;
+    flex: 0 0 320px;
+    margin: 0;
+    background:#fff;
+    border-radius:8px;
+    padding:18px 22px;
+    box-shadow:0 1px 4px rgba(0,0,0,.15);
+  }
+  .toolbar h1{
+    font-size:18px;
+    margin:0 0 14px 0;
+  }
+  .form-row{
+    display:flex;
+    flex-wrap:wrap;
+    gap:14px;
+    margin-bottom:12px;
+  }
+  .field{
+    display:flex;
+    flex-direction:column;
+    gap:4px;
+    font-size:13px;
+    color:#333;
+  }
+  .field input, .field select{
+    font-size:14px;
+    padding:6px 8px;
+    border:1px solid #bbb;
+    border-radius:4px;
+    min-width:110px;
+  }
+  #printBtn{
+    background:#8b0000;
+    color:#fff;
+    border:none;
+    padding:10px 22px;
+    font-size:15px;
+    border-radius:5px;
+    cursor:pointer;
+    margin-top:6px;
+  }
+  #printBtn:hover{ background:#6e0000; }
+  .hint{
+    font-size:12px;
+    color:#777;
+    margin-top:10px;
+  }
+  .size-template{
+    border:1px solid #ddd;
+    border-radius:6px;
+    padding:8px 14px;
+    display:flex;
+    align-items:center;
+    gap:16px;
+    font-size:13px;
+  }
+  .size-template legend{
+    font-size:12px;
+    color:#555;
+    padding:0 4px;
+  }
+  .size-template label{
+    display:flex;
+    align-items:center;
+    gap:5px;
+    cursor:pointer;
+  }
+
+  /* ---------- The printable page ---------- */
+  .page{
+    width: var(--page-w);
+    height: var(--page-h);
+    background:#fff;
+    margin: 0 auto;
+    position: relative;
+    box-shadow:0 1px 6px rgba(0,0,0,.3);
+  }
+
+  .sheet{
+    position:absolute;
+    top: var(--margin-top);
+    left: var(--margin-side);
+    width: calc(3 * var(--label-w) + 2 * var(--h-gap));
+    height: calc(8 * var(--label-h));
+    display:grid;
+    grid-template-columns: repeat(3, var(--label-w));
+    grid-template-rows: repeat(8, var(--label-h));
+    column-gap: var(--h-gap);
+    row-gap: var(--v-gap);
+  }
+
+  .sticker{
+    width: var(--label-w);
+    height: var(--label-h);
+    border:0.5pt solid #000;
+    display:grid;
+    /* proportions taken directly from the excel column widths (B:G) */
+    grid-template-columns: 7.2mm 1fr 20.7mm;
+    overflow:hidden;
+    background:#fff;
+  }
+
+  .export-strip{
+    border-right:0.5pt solid #000;
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+    color:#800000;
+    font-family: 'Arial Black', Arial, sans-serif;
+    font-weight:bold;
+    font-style:italic;
+    font-size:15pt;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+
+  .info{
+    display:flex;
+    flex-direction:column;
+    justify-content:space-evenly;
+    padding:0 1mm;
+    overflow:hidden;
+  }
+  .info .row{
+    white-space:nowrap;
+    line-height:1.05;
+  }
+  .info .row.bordered{
+    border-bottom:0.5pt solid #000;
+  }
+  .row.article{ font-size:10pt; font-weight:bold; }
+  .row.article .val{ font-size:13pt; font-weight:bold; }
+  .row.colour{ font-size:10pt; font-weight:bold; }
+  .row.colour .val{ font-size:12pt; font-weight:bold; }
+  .row.mrp{ font-size:10pt; font-weight:bold; }
+  .row.mrp .val{ font-size:12pt; font-weight:bold; }
+  .row.tax{ font-size:8pt; font-weight:bold; }
+  .row.mfg{ font-size:8pt; font-weight:bold; }
+  .row.mfg .month{ font-size:9pt; font-weight:bold; }
+  .row.mfg .year{ font-size:10pt; font-weight:bold; }
+
+  .size-num{
+    border-left:0.5pt solid #000;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-family: Arial, sans-serif;
+    font-weight:bold;
+    font-size:48pt;
+    line-height:1;
+  }
+
+  /* ---------- Print rules ---------- */
+  @page{
+    size: A4;
+    margin: 0;
+  }
+  @media print{
+    body{ background:#fff; padding:0; margin:0; }
+    .layout{ display:block; }
+    .toolbar{ display:none; }
+    .page-wrap{ width:auto !important; height:auto !important; overflow:visible !important; }
+    .page{ box-shadow:none; margin:0; transform:none !important; }
+    /* keep the layout identical, just make every line invisible */
+    .sticker,
+    .export-strip,
+    .size-num,
+    .info .row.bordered{
+      border-color: transparent !important;
+    }
+  }
+</style>
+</head>
+<body>
+
+  <div class="layout">
+  <div class="toolbar">
+    <h1>Export Sticker Sheet</h1>
+    <div class="form-row">
+      <label class="field">Article No.
+        <input type="text" id="article" value="2005">
+      </label>
+      <label class="field">Colour
+        <input type="text" id="colour" value="BLACK">
+      </label>
+      <label class="field">M.R.P. (Rs.)
+        <input type="text" id="price" value="1099">
+      </label>
+      <label class="field">Month
+        <select id="month">
+          <option>JAN</option><option>FEB</option><option>MAR</option><option>APR</option>
+          <option>MAY</option><option>JUN</option><option>JUL</option><option>AUG</option>
+          <option>SEP</option><option>OCT</option><option>NOV</option><option>DEC</option>
+        </select>
+      </label>
+      <label class="field">Year
+        <input type="number" id="year" value="2026">
+      </label>
+    </div>
+    <div class="form-row">
+      <fieldset class="size-template">
+        <legend>Size Template</legend>
+        <label><input type="radio" name="sizeTemplate" value="7to11" checked> 7 to 11</label>
+        <label><input type="radio" name="sizeTemplate" value="7to10"> 7 to 10</label>
+        <label><input type="radio" name="sizeTemplate" value="9to11"> 9 to 11</label>
+      </fieldset>
+      <fieldset class="size-template">
+        <legend>Stickers to Print</legend>
+        <label><input type="radio" name="sheetCount" value="24" checked> 24</label>
+        <label><input type="radio" name="sheetCount" value="12"> 12</label>
+      </fieldset>
+    </div>
+    <button id="printBtn" onclick="window.print()">Print Sheet</button>
+    <div class="hint">Grid lines will not be printed.</div>
+    <div class="hint">Built By Venkatram</div>
+  </div>
+
+  <div class="page-wrap">
+  <div class="page">
+    <div class="sheet" id="sheet"></div>
+  </div>
+  </div>
+  </div>
+
+<script>
+  // the three size-curve templates, one row of 3 values per sticker-row, 8 rows total
+  const sizeTemplates = {
+    '7to11': [
+      [7,7,8],
+      [8,8,9],
+      [9,10,11],
+      [9,10,11],
+      [7,7,8],
+      [8,8,9],
+      [9,10,11],
+      [9,10,11]
+    ],
+    '7to10': [
+      [7,7,8],
+      [8,8,8],
+      [9,9,9],
+      [9,10,10],
+      [7,7,8],
+      [8,8,8],
+      [9,9,9],
+      [9,10,10]
+    ],
+    '9to11': [
+      [9,9,9],
+      [9,10,10],
+      [10,10,11],
+      [11,11,11],
+      [9,9,9],
+      [9,10,10],
+      [10,10,11],
+      [11,11,11]
+    ]
+  };
+
+  const sheet = document.getElementById('sheet');
+  const stickers = [];
+
+  // build 24 sticker elements once (size number filled in later by applySizeTemplate)
+  for (let i = 0; i < 24; i++){
+    const el = document.createElement('div');
+    el.className = 'sticker';
+    el.innerHTML = `
+      <div class="export-strip">EXPORT</div>
+      <div class="info">
+        <div class="row article bordered">Article&nbsp;: <span class="val" data-f="article"></span></div>
+        <div class="row colour bordered">Colour&nbsp;: <span class="val" data-f="colour"></span></div>
+        <div class="row mrp bordered">M.R.P Rs. <span class="val" data-f="price"></span>/-</div>
+        <div class="row tax">(Inclusive of all taxes)</div>
+        <div class="row mfg">Mfg.Date: <span class="month" data-f="month"></span> <span class="year" data-f="year"></span></div>
+      </div>
+      <div class="size-num"></div>
+    `;
+    sheet.appendChild(el);
+    stickers.push(el);
+  }
+
+  function applySizeTemplate(key){
+    const flat = sizeTemplates[key].flat();
+    stickers.forEach((st, i) => {
+      st.querySelector('.size-num').textContent = flat[i];
+    });
+  }
+
+  document.querySelectorAll('input[name="sizeTemplate"]').forEach(radio => {
+    radio.addEventListener('change', () => applySizeTemplate(radio.value));
+  });
+
+  function applySheetCount(count){
+    // stickers 0-11 = first 4 rows (top half), 12-23 = last 4 rows (bottom half)
+    stickers.forEach((st, i) => {
+      st.style.display = (count === '12' && i >= 12) ? 'none' : '';
+    });
+  }
+
+  document.querySelectorAll('input[name="sheetCount"]').forEach(radio => {
+    radio.addEventListener('change', () => applySheetCount(radio.value));
+  });
+
+  function refresh(){
+    const vals = {
+      article: document.getElementById('article').value,
+      colour: document.getElementById('colour').value.toUpperCase(),
+      price: document.getElementById('price').value,
+      month: document.getElementById('month').value,
+      year: document.getElementById('year').value
+    };
+    stickers.forEach(st => {
+      Object.keys(vals).forEach(k => {
+        st.querySelectorAll(`[data-f="${k}"]`).forEach(node => node.textContent = vals[k]);
+      });
+    });
+  }
+
+  ['article','colour','price','month','year'].forEach(id => {
+    document.getElementById(id).addEventListener('input', refresh);
+  });
+
+  // default month/year to current date, but editable
+  const now = new Date();
+  const monthNames = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
+  document.getElementById('month').value = monthNames[now.getMonth()];
+  document.getElementById('year').value = now.getFullYear();
+
+  applySizeTemplate('7to11');
+  applySheetCount('24');
+  refresh();
+
+  // ---- scale the preview to fit small screens (visual only, no measurement change) ----
+  function fitPreview(){
+    const page = document.querySelector('.page');
+    const wrap = document.querySelector('.page-wrap');
+    if (window.innerWidth > 900){
+      page.style.transform = 'none';
+      wrap.style.width = 'auto';
+      wrap.style.height = 'auto';
+      return;
+    }
+    page.style.transform = 'none';
+    const naturalWidth = page.getBoundingClientRect().width;
+    const naturalHeight = page.getBoundingClientRect().height;
+    const available = Math.min(window.innerWidth - 32, 480);
+    const scale = Math.min(1, available / naturalWidth);
+    page.style.transform = `scale(${scale})`;
+    wrap.style.width = (naturalWidth * scale) + 'px';
+    wrap.style.height = (naturalHeight * scale) + 'px';
+  }
+
+  window.addEventListener('resize', fitPreview);
+  window.addEventListener('orientationchange', fitPreview);
+  fitPreview();
+</script>
+
+</body>
+</html>
