@@ -19,19 +19,93 @@
   * { box-sizing: border-box; }
 
   body{
-    font-family: Arial, Helvetica, sans-serif;
-    background:#e9e9e9;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    background: #eef1f6;
     margin:0;
-    padding:20px;
+    padding:32px 20px;
+    color:#1f2430;
   }
 
-  /* ---------- Side-by-side layout (screen only) ---------- */
-  .layout{
+  .page-header-wrap{
+    position:relative;
+    max-width:1340px;
+    margin:0 auto;
+  }
+  .page-header{
+    text-align:center;
+    margin:0 0 32px 0;
+  }
+  .mode-toggle-row{
+    position:absolute;
+    top:2px;
+    right:0;
+    display:flex;
+    align-items:center;
+    gap:9px;
+    font-size:12.5px;
+    font-weight:600;
+    color:#5c6478;
+  }
+  .toggle-switch{
+    position:relative;
+    display:inline-block;
+    width:40px;
+    height:22px;
+    flex:none;
+  }
+  .toggle-switch input{ opacity:0; width:0; height:0; position:absolute; }
+  .toggle-switch .track{
+    position:absolute; inset:0;
+    background:#d7dbe5;
+    border-radius:22px;
+    cursor:pointer;
+    transition:background .2s;
+  }
+  .toggle-switch .track::before{
+    content:"";
+    position:absolute;
+    height:16px; width:16px;
+    left:3px; top:3px;
+    background:#fff;
+    border-radius:50%;
+    box-shadow:0 1px 2px rgba(0,0,0,.2);
+    transition:transform .2s;
+  }
+  .toggle-switch input:checked + .track{ background:#1f3d8f; }
+  .toggle-switch input:checked + .track::before{ transform:translateX(18px); }
+  .mode-toggle-row span.active{ color:#1f3d8f; }
+  .page-title{
+    color:#0d1b3e;
+    font-size:28px;
+    font-weight:700;
+    letter-spacing:-0.02em;
+    margin:0 0 4px 0;
+  }
+  .page-subtitle{
+    color:#8891a5;
+    font-size:13.5px;
+    font-weight:500;
+    letter-spacing:0.02em;
+  }
+
+  /* ---------- Overall page structure (screen only) ---------- */
+  #appContainer{
+    display:flex;
+    flex-direction:column;
+    gap:24px;
+    max-width:1340px;
+    margin:0 auto;
+  }
+  .top-row{
     display:flex;
     align-items:flex-start;
     justify-content:center;
     gap:24px;
     flex-wrap:wrap;
+  }
+  .preview-row{
+    display:flex;
+    justify-content:center;
   }
 
   .page-wrap{
@@ -39,32 +113,47 @@
   }
   .page{
     transform-origin: top left;
+    border-radius:2px;
   }
 
   /* ---------- Responsive / mobile ---------- */
   @media (max-width: 900px){
-    body{ padding:12px; }
-    .layout{
+    body{ padding:20px 14px; }
+    .page-title{ font-size:22px; }
+    .page-header{ margin-bottom:22px; }
+    .mode-toggle-row{
+      position:static;
+      justify-content:center;
+      margin-bottom:14px;
+    }
+    #appContainer{
+      flex-direction: column;
+    }
+    .top-row{
       flex-direction: column;
       align-items: stretch;
       gap:16px;
+      width:auto;
+      flex:none;
     }
-    .toolbar{
+    .toolbar, .list-panel{
       width:100%;
       max-width:none;
       flex:none;
-      padding:16px;
+      padding:20px;
     }
-    .toolbar h1{ font-size:19px; }
-    .form-row{ gap:12px; }
-    .field{ flex:1 1 100%; min-width:0; font-size:14px; }
+    .toolbar h2, .list-panel h2{ font-size:16px; }
+    .form-row{ grid-template-columns: 1fr 1fr; gap:12px; }
+    .form-row.radio-row{ display:flex; flex-direction:column; gap:12px; }
+    .field{ font-size:13px; min-width:0; }
     .field input, .field select{
       width:100%;
       min-width:0;
       font-size:16px;   /* prevents iOS auto-zoom on focus */
-      padding:9px 10px;
+      padding:10px 12px;
     }
     .size-template{ flex-wrap:wrap; row-gap:10px; font-size:14px; }
+    .btn-row{ flex-direction:column; }
     #printBtn{ width:100%; padding:13px; font-size:16px; }
 
     /* sheet preview: keep true size, scroll to view instead of shrinking */
@@ -73,7 +162,7 @@
       max-width:100%;
       overflow:auto;
       -webkit-overflow-scrolling:touch;
-      border-radius:6px;
+      border-radius:10px;
       box-shadow: inset 0 0 0 1px #ddd;
     }
     .page{
@@ -81,74 +170,250 @@
     }
   }
 
-  /* ---------- Toolbar / form (screen only) ---------- */
-  .toolbar{
-    width: 320px;
-    flex: 0 0 320px;
-    margin: 0;
+  /* ---------- Shared card look for form + list panel ---------- */
+  .toolbar, .list-panel{
     background:#fff;
-    border-radius:8px;
-    padding:18px 22px;
-    box-shadow:0 1px 4px rgba(0,0,0,.15);
+    border-radius:16px;
+    padding:24px 26px;
+    border:1px solid rgba(15,23,42,.06);
+    box-shadow: 0 1px 2px rgba(15,23,42,.04), 0 8px 24px -12px rgba(15,23,42,.10);
   }
-  .toolbar h1{
-    font-size:18px;
-    margin:0 0 14px 0;
+  .toolbar{
+    width: 460px;
+    flex: 0 0 460px;
   }
-  .form-row{
+  .list-panel{
+    width: 620px;
+    flex: 0 0 620px;
     display:flex;
-    flex-wrap:wrap;
+    flex-direction:column;
+  }
+  .toolbar h2, .list-panel h2{
+    font-size:15px;
+    font-weight:700;
+    letter-spacing:0.01em;
+    margin:0 0 18px 0;
+    padding-bottom:12px;
+    border-bottom:1px solid #eef0f4;
+    color:#0d1b3e;
+  }
+
+  .form-row{
+    display:grid;
+    grid-template-columns: 1fr 1fr;
+    gap:16px 18px;
+    margin-bottom:18px;
+  }
+  .form-row.radio-row{
+    display:flex;
+    flex-direction:column;
     gap:14px;
-    margin-bottom:12px;
   }
   .field{
     display:flex;
     flex-direction:column;
-    gap:4px;
-    font-size:13px;
-    color:#333;
+    gap:6px;
+    font-size:12.5px;
+    font-weight:600;
+    letter-spacing:0.02em;
+    color:#5c6478;
+    min-width:0;
   }
   .field input, .field select{
     font-size:14px;
-    padding:6px 8px;
-    border:1px solid #bbb;
-    border-radius:4px;
-    min-width:110px;
+    font-weight:500;
+    color:#1f2430;
+    padding:9px 11px;
+    border:1.5px solid #e2e5ec;
+    border-radius:9px;
+    min-width:100px;
+    background:#fbfbfd;
+    transition: border-color .15s, box-shadow .15s, background .15s;
+    font-family: inherit;
   }
+  .field input:hover, .field select:hover{ border-color:#c7ccd8; }
+  .field input:focus, .field select:focus{
+    outline:none;
+    border-color:#3355a8;
+    background:#fff;
+    box-shadow: 0 0 0 3px rgba(51,85,168,.12);
+  }
+
   #printBtn{
-    background:#8b0000;
+    background:#1f3d8f;
     color:#fff;
     border:none;
-    padding:10px 22px;
-    font-size:15px;
-    border-radius:5px;
+    padding:11px 22px;
+    font-size:14.5px;
+    font-weight:600;
+    letter-spacing:0.01em;
+    border-radius:9px;
     cursor:pointer;
-    margin-top:6px;
+    transition: background .15s, transform .1s, box-shadow .15s;
+    box-shadow: 0 1px 2px rgba(31,61,143,.15);
   }
-  #printBtn:hover{ background:#6e0000; }
+  #printBtn:hover{ background:#16296b; box-shadow: 0 4px 10px rgba(31,61,143,.25); }
+  #printBtn:active{ transform: translateY(1px); }
+  #printBtn:disabled{ opacity:0.55; cursor:default; box-shadow:none; transform:none; }
+
   .hint{
     font-size:12px;
-    color:#777;
+    color:#9aa1b0;
     margin-top:10px;
+    line-height:1.4;
   }
-  .size-template{
-    border:1px solid #ddd;
+
+  .btn-row{
+    display:flex;
+    gap:10px;
+    margin-top:8px;
+  }
+  .btn-row #printBtn{ flex:1; }
+  .secondary-btn{
+    flex:1;
+    background:#fff;
+    color:#1f3d8f;
+    border:1.5px solid #c6d0ea;
+    padding:11px 14px;
+    font-size:14.5px;
+    font-weight:600;
+    letter-spacing:0.01em;
+    border-radius:9px;
+    cursor:pointer;
+    transition: background .15s, border-color .15s;
+  }
+  .secondary-btn:hover{ background:#f2f5fc; border-color:#1f3d8f; }
+  .secondary-btn:disabled{ opacity:0.55; cursor:default; }
+
+  .list-panel-head{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:0;
+    padding-bottom:12px;
+    border-bottom:1px solid #eef0f4;
+    margin-bottom:18px;
+  }
+  .list-panel-head h2{ margin:0; padding:0; border:none; }
+  .clear-btn{
+    background:none;
+    border:1.5px solid #f0c4c0;
+    color:#c0392b;
+    border-radius:8px;
+    padding:6px 12px;
+    font-size:12px;
+    font-weight:600;
+    cursor:pointer;
+    transition: background .15s, border-color .15s;
+  }
+  .clear-btn:hover{ background:#fdf1f0; border-color:#c0392b; }
+
+  .table-wrap{
+    overflow-x:hidden;
+    overflow-y:auto;
+    border:1px solid #eef0f4;
+    border-radius:10px;
+    max-height:340px;
+    flex:1;
+  }
+  #entryTable{
+    width:100%;
+    table-layout:fixed;
+    border-collapse:collapse;
+    font-size:13.5px;
+  }
+  #entryTable th, #entryTable td{
+    padding:12px 14px;
+    text-align:left;
+    border-bottom:1px solid #f1f2f6;
+    word-wrap:break-word;
+    overflow-wrap:break-word;
+    white-space:nowrap;
+  }
+  #entryTable th:first-child, #entryTable td:first-child{ width:5%; color:#a3aab8; }
+  #entryTable th:last-child, #entryTable td:last-child{ width:8%; text-align:center; }
+  #entryTable tbody tr:hover{ background:#f8f9fc; }
+  #entryTable tbody tr:last-child td{ border-bottom:none; }
+  #entryTable thead th{
+    background:#f7f8fb;
+    color:#5c6478;
+    font-weight:700;
+    font-size:11px;
+    text-transform:uppercase;
+    letter-spacing:0.04em;
+    position:sticky;
+    top:0;
+  }
+  #entryTable .empty-row td{
+    color:#a3aab8;
+    text-align:center;
+    white-space:normal;
+    padding:28px 8px;
+    font-size:12.5px;
+  }
+  .del-btn{
+    background:#fdf1f0;
+    color:#c0392b;
+    border:none;
     border-radius:6px;
-    padding:8px 14px;
+    width:24px;
+    height:24px;
+    line-height:1;
+    cursor:pointer;
+    font-size:15px;
+    transition: background .15s, color .15s;
+  }
+  .del-btn:hover{ background:#c0392b; color:#fff; }
+
+  #bulkPrintBtn{
+    width:100%;
+    margin-top:16px;
+    background:#1f3d8f;
+    color:#fff;
+    border:none;
+    padding:11px 22px;
+    font-size:14.5px;
+    font-weight:600;
+    letter-spacing:0.01em;
+    border-radius:9px;
+    cursor:pointer;
+    transition: background .15s, box-shadow .15s;
+    box-shadow: 0 1px 2px rgba(31,61,143,.15);
+  }
+  #bulkPrintBtn:hover{ background:#16296b; box-shadow: 0 4px 10px rgba(31,61,143,.25); }
+  #bulkPrintBtn:disabled{ opacity:0.55; cursor:default; box-shadow:none; }
+
+  .size-template{
+    border:1.5px solid #e2e5ec;
+    border-radius:10px;
+    padding:10px 14px;
     display:flex;
     align-items:center;
     gap:16px;
     font-size:13px;
+    background:#fbfbfd;
+    flex:1 1 auto;
   }
   .size-template legend{
-    font-size:12px;
-    color:#555;
+    font-size:11px;
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:0.04em;
+    color:#8891a5;
     padding:0 4px;
   }
   .size-template label{
     display:flex;
     align-items:center;
-    gap:5px;
+    gap:6px;
+    cursor:pointer;
+    font-weight:500;
+    color:#3a4152;
+  }
+  .size-template input[type="radio"]{
+    accent-color:#1f3d8f;
+    width:14px;
+    height:14px;
     cursor:pointer;
   }
 
@@ -187,17 +452,23 @@
   }
 
   .export-strip{
+    position:relative;
     border-right:0.5pt solid #000;
-    writing-mode: vertical-rl;
-    transform: rotate(180deg);
-    color:#800000;
+    overflow:hidden;
+  }
+  .export-strip span{
+    position:absolute;
+    top:50%;
+    left:50%;
+    width: 34mm;         /* = label height, so the rotated text can center along it */
+    text-align:center;
+    white-space:nowrap;
+    transform: translate(-50%, -50%) rotate(-90deg);
+    color:#00308F;
     font-family: 'Arial Black', Arial, sans-serif;
     font-weight:bold;
     font-style:italic;
     font-size:15pt;
-    display:flex;
-    align-items:center;
-    justify-content:center;
   }
 
   .info{
@@ -241,12 +512,19 @@
     size: A4;
     margin: 0;
   }
+  .print-copy{ display:none; }
   @media print{
     body{ background:#fff; padding:0; margin:0; }
-    .layout{ display:block; }
-    .toolbar{ display:none; }
+    .page-header{ display:none; }
+    .mode-toggle-row{ display:none; }
+    #appContainer{ display:block; }
+    .top-row{ display:block; }
+    .toolbar, .list-panel{ display:none; }
+    .preview-row{ display:block; }
     .page-wrap{ width:auto !important; height:auto !important; overflow:visible !important; }
     .page{ box-shadow:none; margin:0; transform:none !important; }
+    .print-copy{ display:block !important; }
+    .page-wrap:not(:last-child){ page-break-after: always; }
     /* keep the layout identical, just make every line invisible */
     .sticker,
     .export-strip,
@@ -259,55 +537,106 @@
 </head>
 <body>
 
-  <div class="layout">
-  <div class="toolbar">
-    <h1>Export Sticker Sheet</h1>
-    <div class="form-row">
-      <label class="field">Article No.
-        <input type="text" id="article" value="2005">
+  <div class="page-header-wrap">
+    <div class="mode-toggle-row">
+      <span id="modeLabelSingle" class="active">Single Print</span>
+      <label class="toggle-switch">
+        <input type="checkbox" id="modeSwitch" onchange="applyMode()">
+        <span class="track"></span>
       </label>
-      <label class="field">Colour
-        <input type="text" id="colour" value="BLACK">
-      </label>
-      <label class="field">M.R.P. (Rs.)
-        <input type="text" id="price" value="1099">
-      </label>
-      <label class="field">Month
-        <select id="month">
-          <option>JAN</option><option>FEB</option><option>MAR</option><option>APR</option>
-          <option>MAY</option><option>JUN</option><option>JUL</option><option>AUG</option>
-          <option>SEP</option><option>OCT</option><option>NOV</option><option>DEC</option>
-        </select>
-      </label>
-      <label class="field">Year
-        <input type="number" id="year" value="2026">
-      </label>
+      <span id="modeLabelBulk">Bulk Print</span>
     </div>
-    <div class="form-row">
-      <fieldset class="size-template">
-        <legend>Size Template</legend>
-        <label><input type="radio" name="sizeTemplate" value="7to11" checked> 7 to 11</label>
-        <label><input type="radio" name="sizeTemplate" value="7to10"> 7 to 10</label>
-        <label><input type="radio" name="sizeTemplate" value="9to11"> 9 to 11</label>
-      </fieldset>
-      <fieldset class="size-template">
-        <legend>Stickers to Print</legend>
-        <label><input type="radio" name="sheetCount" value="24" checked> 24</label>
-        <label><input type="radio" name="sheetCount" value="12"> 12</label>
-      </fieldset>
+    <div class="page-header">
+      <h1 class="page-title">Export Sticker Print</h1>
     </div>
-    <button id="printBtn" onclick="window.print()">Print Sheet</button>
-    <div class="hint">Grid lines will not be printed.</div>
-    <div class="hint">Built By Venkatram</div>
   </div>
 
-  <div class="page-wrap">
-  <div class="page">
-    <div class="sheet" id="sheet"></div>
-  </div>
-  </div>
+  <div id="appContainer">
+
+  <div class="top-row">
+
+    <div class="toolbar">
+      <h2>Sticker Details</h2>
+      <div class="form-row">
+        <label class="field">Article No.
+          <input type="text" id="article" value="2005">
+        </label>
+        <label class="field">Colour
+          <input type="text" id="colour" value="BLACK">
+        </label>
+        <label class="field">M.R.P. (Rs.)
+          <input type="text" id="price" value="1099">
+        </label>
+        <label class="field">Month
+          <select id="month">
+            <option>JAN</option><option>FEB</option><option>MAR</option><option>APR</option>
+            <option>MAY</option><option>JUN</option><option>JUL</option><option>AUG</option>
+            <option>SEP</option><option>OCT</option><option>NOV</option><option>DEC</option>
+          </select>
+        </label>
+        <label class="field">Year
+          <input type="number" id="year" value="2026">
+        </label>
+        <label class="field">No. of Sheets
+          <input type="number" id="quantity" min="1" step="1" value="1">
+        </label>
+      </div>
+      <div class="form-row radio-row">
+        <fieldset class="size-template">
+          <legend>Size Template</legend>
+          <label><input type="radio" name="sizeTemplate" value="7to11" checked> 7 to 11</label>
+          <label><input type="radio" name="sizeTemplate" value="7to10"> 7 to 10</label>
+          <label><input type="radio" name="sizeTemplate" value="9to11"> 9 to 11</label>
+        </fieldset>
+        <fieldset class="size-template">
+          <legend>Stickers to Print</legend>
+          <label><input type="radio" name="sheetCount" value="24" checked> 24</label>
+          <label><input type="radio" name="sheetCount" value="12"> 12</label>
+        </fieldset>
+      </div>
+      <div class="btn-row">
+        <button id="addToListBtn" class="secondary-btn" onclick="addToList()">Add to List</button>
+        <button id="printBtn" onclick="printSheet()">Print Sheet</button>
+      </div>
+      <div class="hint">Grid lines will not be printed.</div>
+      <div class="hint">Built By Venkatram</div>
+    </div>
+
+    <div class="list-panel" id="listPanel">
+      <div class="list-panel-head">
+        <h2>Bulk Print List</h2>
+        <button class="clear-btn" onclick="clearList()">Clear List</button>
+      </div>
+      <div class="table-wrap">
+        <table id="entryTable">
+          <thead>
+            <tr>
+              <th>#</th><th>Article</th><th>Colour</th><th>MRP</th><th>Sizes</th><th>Count</th><th>Qty</th><th></th>
+            </tr>
+          </thead>
+          <tbody id="entryTableBody">
+            <tr class="empty-row"><td colspan="8">No sheets added yet.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <button id="bulkPrintBtn" onclick="bulkPrint()">Bulk Print</button>
+      <div class="hint">List is saved automatically and stays until you tap "Clear List".</div>
+    </div>
+
   </div>
 
+  <div class="preview-row">
+    <div class="page-wrap">
+      <div class="page">
+        <div class="sheet" id="sheet"></div>
+      </div>
+    </div>
+  </div>
+
+  </div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script>
   // the three size-curve templates, one row of 3 values per sticker-row, 8 rows total
   const sizeTemplates = {
@@ -351,7 +680,7 @@
     const el = document.createElement('div');
     el.className = 'sticker';
     el.innerHTML = `
-      <div class="export-strip">EXPORT</div>
+      <div class="export-strip"><span>EXPORT</span></div>
       <div class="info">
         <div class="row article bordered">Article&nbsp;: <span class="val" data-f="article"></span></div>
         <div class="row colour bordered">Colour&nbsp;: <span class="val" data-f="colour"></span></div>
@@ -416,6 +745,243 @@
   applySheetCount('24');
   refresh();
 
+  // ---- shared: hand a finished jsPDF document to the system print process ----
+  function sendToPrint(pdf){
+    const blobUrl = URL.createObjectURL(pdf.output('blob'));
+    // open the exact PDF in a new tab using the browser's own PDF viewer,
+    // which has its own Print button — avoids cross-origin/iframe restrictions entirely
+    const win = window.open(blobUrl, '_blank');
+    if (!win){
+      alert('Your browser blocked the print preview from opening. Please allow pop-ups for this page and try again.');
+      URL.revokeObjectURL(blobUrl);
+      return;
+    }
+    try {
+      win.onload = () => {
+        try { win.focus(); win.print(); } catch (e) { /* use the viewer's own Print icon instead */ }
+      };
+    } catch (e) { /* cross-origin (e.g. local file testing) — use the viewer's own Print icon */ }
+    setTimeout(() => URL.revokeObjectURL(blobUrl), 120000);
+  }
+
+  // ---- Print: directly uses the browser's native print (no PDF needed for a single sheet) ----
+  function printSheet(){
+    // clear any leftover copies from a previous print
+    document.querySelectorAll('.page-wrap.print-copy').forEach(el => el.remove());
+
+    const qty = Math.max(1, parseInt(document.getElementById('quantity').value, 10) || 1);
+    const originalWrap = document.querySelector('.preview-row .page-wrap');
+    const previewRow = document.querySelector('.preview-row');
+    for (let i = 1; i < qty; i++){
+      const clone = originalWrap.cloneNode(true);
+      clone.classList.add('print-copy');
+      previewRow.appendChild(clone);
+    }
+
+    window.print();
+
+    window.addEventListener('afterprint', function cleanup(){
+      document.querySelectorAll('.page-wrap.print-copy').forEach(el => el.remove());
+      window.removeEventListener('afterprint', cleanup);
+    });
+  }
+
+  // ---- Print List (for bulk printing), persisted in localStorage ----
+  const STORAGE_KEY = 'stickerPrintList';
+  const sizeTemplateLabels = { '7to11': '7–11', '7to10': '7–10', '9to11': '9–11' };
+  let sheetList = [];
+  let nextEntryId = 1;
+
+  function loadList(){
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (raw){
+        const parsed = JSON.parse(raw);
+        sheetList = parsed.list || [];
+        nextEntryId = parsed.nextId || 1;
+      }
+    } catch (e) { /* ignore corrupted storage */ }
+    renderTable();
+  }
+
+  function saveList(){
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({ list: sheetList, nextId: nextEntryId }));
+  }
+
+  function addToList(){
+    const entry = {
+      id: nextEntryId++,
+      article: document.getElementById('article').value,
+      colour: document.getElementById('colour').value.toUpperCase(),
+      price: document.getElementById('price').value,
+      month: document.getElementById('month').value,
+      year: document.getElementById('year').value,
+      sizeTemplate: document.querySelector('input[name="sizeTemplate"]:checked').value,
+      sheetCount: document.querySelector('input[name="sheetCount"]:checked').value,
+      quantity: Math.max(1, parseInt(document.getElementById('quantity').value, 10) || 1)
+    };
+    sheetList.push(entry);
+    saveList();
+    renderTable();
+  }
+
+  function deleteEntry(id){
+    sheetList = sheetList.filter(e => e.id !== id);
+    saveList();
+    renderTable();
+  }
+
+  function clearList(){
+    if (sheetList.length === 0) return;
+    if (!confirm('Clear the entire print list? This cannot be undone.')) return;
+    sheetList = [];
+    saveList();
+    renderTable();
+  }
+
+  function renderTable(){
+    const tbody = document.getElementById('entryTableBody');
+    tbody.innerHTML = '';
+    if (sheetList.length === 0){
+      tbody.innerHTML = '<tr class="empty-row"><td colspan="8">No sheets added yet.</td></tr>';
+      return;
+    }
+    sheetList.forEach((entry, idx) => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${idx + 1}</td>
+        <td>${entry.article}</td>
+        <td>${entry.colour}</td>
+        <td>${entry.price}</td>
+        <td>${sizeTemplateLabels[entry.sizeTemplate]}</td>
+        <td>${entry.sheetCount}</td>
+        <td>${entry.quantity || 1}</td>
+        <td><button class="del-btn" onclick="deleteEntry(${entry.id})" title="Delete">×</button></td>
+      `;
+      tbody.appendChild(tr);
+    });
+  }
+
+  loadList();
+
+  // builds one offscreen A4 sheet (same markup/CSS as the live preview) for a given list entry
+  function buildOffscreenSheet(entry){
+    const wrapper = document.createElement('div');
+    wrapper.className = 'page';
+    wrapper.style.position = 'fixed';
+    wrapper.style.left = '-10000px';
+    wrapper.style.top = '0';
+    wrapper.style.margin = '0';
+    wrapper.style.boxShadow = 'none';
+
+    const sheetEl = document.createElement('div');
+    sheetEl.className = 'sheet';
+    wrapper.appendChild(sheetEl);
+
+    const flat = sizeTemplates[entry.sizeTemplate].flat();
+    const count = entry.sheetCount === '12' ? 12 : 24;
+    for (let i = 0; i < count; i++){
+      const el = document.createElement('div');
+      el.className = 'sticker';
+      el.innerHTML = `
+        <div class="export-strip"><span>EXPORT</span></div>
+        <div class="info">
+          <div class="row article bordered">Article&nbsp;: <span class="val">${entry.article}</span></div>
+          <div class="row colour bordered">Colour&nbsp;: <span class="val">${entry.colour}</span></div>
+          <div class="row mrp bordered">M.R.P Rs. <span class="val">${entry.price}</span>/-</div>
+          <div class="row tax">(Inclusive of all taxes)</div>
+          <div class="row mfg">Mfg.Date: <span class="month">${entry.month}</span> <span class="year">${entry.year}</span></div>
+        </div>
+        <div class="size-num">${flat[i]}</div>
+      `;
+      sheetEl.appendChild(el);
+    }
+    document.body.appendChild(wrapper);
+
+    // this element is snapshotted by html2canvas, which never applies @media print rules —
+    // so force the guide-line borders transparent directly, same as the print stylesheet does
+    wrapper.querySelectorAll('.sticker, .export-strip, .size-num').forEach(el => {
+      el.style.borderColor = 'transparent';
+    });
+    wrapper.querySelectorAll('.info .row.bordered').forEach(el => {
+      el.style.borderColor = 'transparent';
+    });
+
+    return wrapper;
+  }
+
+  // ---- Bulk Print: renders every listed sheet, combines into one multi-page PDF, sends to print ----
+  async function bulkPrint(){
+    if (sheetList.length === 0){
+      alert('Add at least one sheet to the list first.');
+      return;
+    }
+    const btn = document.getElementById('bulkPrintBtn');
+    btn.disabled = true;
+    try {
+      const { jsPDF } = window.jspdf;
+      let pdf;
+      let firstPage = true;
+      for (let idx = 0; idx < sheetList.length; idx++){
+        btn.textContent = `Preparing ${idx + 1} of ${sheetList.length}…`;
+        const entry = sheetList[idx];
+        const wrapper = buildOffscreenSheet(entry);
+        await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
+        const canvas = await html2canvas(wrapper, { scale: 3, useCORS: true, backgroundColor: '#ffffff' });
+        const imgData = canvas.toDataURL('image/jpeg', 0.98);
+        document.body.removeChild(wrapper);
+
+        const qty = Math.max(1, entry.quantity || 1);
+        for (let copy = 0; copy < qty; copy++){
+          if (firstPage){
+            pdf = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
+            firstPage = false;
+          } else {
+            pdf.addPage('a4', 'portrait');
+          }
+          pdf.addImage(imgData, 'JPEG', 0, 0, 210, 297);
+        }
+      }
+      sendToPrint(pdf);
+    } catch (err) {
+      alert('Could not prepare the bulk print: ' + err.message);
+    } finally {
+      btn.disabled = false;
+      btn.textContent = 'Bulk Print';
+    }
+  }
+
+  // ---- Single Print / Bulk Print mode toggle (default: Single Print) ----
+  function applyMode(){
+    const bulk = document.getElementById('modeSwitch').checked;
+    const listPanel = document.getElementById('listPanel');
+    const addBtn = document.getElementById('addToListBtn');
+    const printBtn = document.getElementById('printBtn');
+    const topRow = document.querySelector('.top-row');
+    const previewRow = document.querySelector('.preview-row');
+    const appContainer = document.getElementById('appContainer');
+
+    listPanel.style.display = bulk ? 'flex' : 'none';
+    addBtn.style.display = bulk ? '' : 'none';
+    printBtn.style.display = bulk ? 'none' : '';
+
+    if (bulk){
+      // bulk mode: preview sits full-width, below the form + list row
+      if (previewRow.parentElement !== appContainer){
+        appContainer.appendChild(previewRow);
+      }
+    } else {
+      // single mode: preview sits beside the form, no list/table
+      if (previewRow.parentElement !== topRow){
+        topRow.appendChild(previewRow);
+      }
+    }
+
+    document.getElementById('modeLabelSingle').classList.toggle('active', !bulk);
+    document.getElementById('modeLabelBulk').classList.toggle('active', bulk);
+  }
+
+  applyMode();
 </script>
 
 </body>
