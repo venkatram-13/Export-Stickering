@@ -116,64 +116,7 @@
     border-radius:2px;
   }
 
-  /* ---------- Responsive / mobile ---------- */
-  @media (max-width: 900px){
-    body{ padding:20px 14px; }
-    .page-title{ font-size:22px; }
-    .page-header{ margin-bottom:22px; }
-    .mode-toggle-row{
-      position:static;
-      justify-content:center;
-      margin-bottom:14px;
-    }
-    #appContainer{
-      flex-direction: column;
-    }
-    .top-row{
-      flex-direction: column;
-      align-items: stretch;
-      gap:16px;
-      width:auto;
-      flex:none;
-    }
-    .toolbar, .list-panel, .toolbar.split-active{
-      width:100%;
-      max-width:none;
-      flex:none;
-      padding:20px;
-    }
-    .toolbar h2, .list-panel h2{ font-size:16px; }
-    .form-row{ grid-template-columns: 1fr 1fr; gap:12px; }
-    .top-row .form-row.cols-3{ grid-template-columns: 1fr 1fr; }
-    .form-row.radio-row{ display:flex; flex-direction:column; gap:12px; }
-    .halves-row{ flex-direction:column; gap:0; }
-    .half-fields{ grid-template-columns: 1fr 1fr !important; gap:12px; }
-    .half-fields .price-field{ grid-column: 1 / -1; }
-    .mrp-blank-row{ flex-direction:column; align-items:stretch; gap:12px; }
-    .field{ font-size:13px; min-width:0; }
-    .field input, .field select{
-      width:100%;
-      min-width:0;
-      font-size:16px;   /* prevents iOS auto-zoom on focus */
-      padding:10px 12px;
-    }
-    .size-template{ flex-wrap:wrap; row-gap:10px; font-size:14px; }
-    .btn-row{ flex-direction:column; }
-    #printBtn{ width:100%; padding:13px; font-size:16px; }
-
-    /* sheet preview: keep true size, scroll to view instead of shrinking */
-    .page-wrap{
-      width:100%;
-      max-width:100%;
-      overflow:auto;
-      -webkit-overflow-scrolling:touch;
-      border-radius:10px;
-      box-shadow: inset 0 0 0 1px #ddd;
-    }
-    .page{
-      margin:0;
-    }
-  }
+  /* ---------- Responsive / mobile handled at the end of this stylesheet ---------- */
 
   /* ---------- Shared card look for form + list panel ---------- */
   .toolbar, .list-panel{
@@ -693,6 +636,99 @@
     .info .row.bordered{
       border-color: transparent !important;
     }
+  }
+
+  /* =====================================================================
+     Mobile view — kept last in the stylesheet on purpose so it reliably
+     overrides every desktop rule above it, regardless of selector
+     specificity. Nothing here can affect widths ≥901px: it only ever
+     applies inside this single @media block. Desktop is untouched.
+     ===================================================================== */
+  @media (max-width: 900px){
+    body{ padding:20px 14px; }
+
+    .page-header-wrap{ max-width:none; }
+    .page-title{ font-size:22px; }
+    .page-header{ margin-bottom:20px; }
+    .mode-toggle-row{
+      position:static;
+      justify-content:center;
+      margin-bottom:14px;
+    }
+
+    #appContainer{ max-width:none; flex-direction:column; gap:16px; }
+    .top-row{
+      flex-direction:column;
+      align-items:stretch;
+      gap:16px;
+      width:auto;
+      flex:none;
+    }
+    .preview-row{ justify-content:center; }
+
+    /* form + list cards: full width, no fixed/split widths */
+    .toolbar, .list-panel{
+      width:100% !important;
+      max-width:none !important;
+      flex:none !important;
+      padding:18px !important;
+    }
+    .toolbar h2, .list-panel h2{ font-size:16px; }
+
+    /* shared fields row (Month/Year/No. of Sheets) and Article/Colour/MRP:
+       always 2-per-row on mobile, regardless of the desktop cols-3 rule */
+    .form-row{ grid-template-columns: 1fr 1fr !important; gap:12px; }
+    .form-row.radio-row{ display:flex; flex-direction:column; gap:12px; }
+
+    /* split-sheet halves: stack instead of sitting side by side */
+    .halves-row{ flex-direction:column; gap:0; }
+    .half-fields{ grid-template-columns: 1fr 1fr !important; gap:12px; }
+    .half-fields .price-field{ grid-column: 1 / -1 !important; }
+    .mrp-blank-row{ flex-direction:column; align-items:stretch; gap:12px; }
+    .blank-toggle{ width:100%; }
+
+    .field{ font-size:13px; min-width:0; }
+    .field input, .field select{
+      width:100%;
+      min-width:0;
+      font-size:16px;   /* prevents iOS auto-zoom on focus */
+      padding:10px 12px;
+    }
+    .size-template{ flex-wrap:wrap; row-gap:10px; font-size:14px; }
+    .size-template legend{ width:100%; }
+
+    .btn-row{ flex-direction:column; }
+    #printBtn{ width:100%; padding:13px; font-size:16px; }
+    #bulkPrintBtn{ padding:13px; font-size:16px; }
+
+    /* print list: allow horizontal scroll rather than cramming columns */
+    .list-panel-head{ flex-wrap:wrap; gap:8px; }
+    .table-wrap{
+      overflow-x:auto;
+      -webkit-overflow-scrolling:touch;
+      max-height:300px;
+    }
+    #entryTable{
+      table-layout:auto;
+      white-space:nowrap;
+      font-size:13px;
+    }
+    #entryTable th, #entryTable td{ padding:10px 12px; }
+    #entryTable th:first-child, #entryTable td:first-child,
+    #entryTable th:last-child, #entryTable td:last-child{ width:auto; }
+
+    /* sheet preview: keep true size, scroll to view instead of shrinking */
+    .page-wrap{
+      width:100%;
+      max-width:100%;
+      overflow:auto;
+      -webkit-overflow-scrolling:touch;
+      border-radius:10px;
+      box-shadow: inset 0 0 0 1px #ddd;
+    }
+    .page{ margin:0; }
+
+    .confirm-box{ padding:22px 20px; }
   }
 </style>
 </head>
