@@ -28,7 +28,7 @@
 
   .page-header-wrap{
     position:relative;
-    max-width:1340px;
+    max-width:1580px;
     margin:0 auto;
   }
   .page-header{
@@ -71,11 +71,11 @@
     box-shadow:0 1px 2px rgba(0,0,0,.2);
     transition:transform .2s;
   }
-  .toggle-switch input:checked + .track{ background:#1f3d8f; }
+  .toggle-switch input:checked + .track{ background:#000000; }
   .toggle-switch input:checked + .track::before{ transform:translateX(18px); }
-  .mode-toggle-row span.active{ color:#1f3d8f; }
+  .mode-toggle-row span.active{ color:#000000; }
   .page-title{
-    color:#0d1b3e;
+    color:#000000;
     font-size:28px;
     font-weight:700;
     letter-spacing:-0.02em;
@@ -93,7 +93,7 @@
     display:flex;
     flex-direction:column;
     gap:24px;
-    max-width:1340px;
+    max-width:1580px;
     margin:0 auto;
   }
   .top-row{
@@ -136,7 +136,7 @@
       width:auto;
       flex:none;
     }
-    .toolbar, .list-panel{
+    .toolbar, .list-panel, .toolbar.split-active{
       width:100%;
       max-width:none;
       flex:none;
@@ -144,7 +144,12 @@
     }
     .toolbar h2, .list-panel h2{ font-size:16px; }
     .form-row{ grid-template-columns: 1fr 1fr; gap:12px; }
+    .top-row .form-row.cols-3{ grid-template-columns: 1fr 1fr; }
     .form-row.radio-row{ display:flex; flex-direction:column; gap:12px; }
+    .halves-row{ flex-direction:column; gap:0; }
+    .half-fields{ grid-template-columns: 1fr 1fr !important; gap:12px; }
+    .half-fields .price-field{ grid-column: 1 / -1; }
+    .mrp-blank-row{ flex-direction:column; align-items:stretch; gap:12px; }
     .field{ font-size:13px; min-width:0; }
     .field input, .field select{
       width:100%;
@@ -181,6 +186,11 @@
   .toolbar{
     width: 460px;
     flex: 0 0 460px;
+    transition: width .15s ease;
+  }
+  .toolbar.split-active{
+    width: 700px;
+    flex: 0 0 700px;
   }
   .list-panel{
     width: 620px;
@@ -195,7 +205,7 @@
     margin:0 0 18px 0;
     padding-bottom:12px;
     border-bottom:1px solid #eef0f4;
-    color:#0d1b3e;
+    color:#000000;
   }
 
   .form-row{
@@ -203,6 +213,9 @@
     grid-template-columns: 1fr 1fr;
     gap:16px 18px;
     margin-bottom:18px;
+  }
+  .form-row.cols-3{
+    grid-template-columns: 1fr 1fr 1fr;
   }
   .form-row.radio-row{
     display:flex;
@@ -234,13 +247,13 @@
   .field input:hover, .field select:hover{ border-color:#c7ccd8; }
   .field input:focus, .field select:focus{
     outline:none;
-    border-color:#3355a8;
+    border-color:#000000;
     background:#fff;
-    box-shadow: 0 0 0 3px rgba(51,85,168,.12);
+    box-shadow: 0 0 0 3px rgba(0,0,0,.12);
   }
 
   #printBtn{
-    background:#1f3d8f;
+    background:#000000;
     color:#fff;
     border:none;
     padding:11px 22px;
@@ -250,9 +263,9 @@
     border-radius:9px;
     cursor:pointer;
     transition: background .15s, transform .1s, box-shadow .15s;
-    box-shadow: 0 1px 2px rgba(31,61,143,.15);
+    box-shadow: 0 1px 2px rgba(0,0,0,.15);
   }
-  #printBtn:hover{ background:#16296b; box-shadow: 0 4px 10px rgba(31,61,143,.25); }
+  #printBtn:hover{ background:#2b2b2b; box-shadow: 0 4px 10px rgba(0,0,0,.25); }
   #printBtn:active{ transform: translateY(1px); }
   #printBtn:disabled{ opacity:0.55; cursor:default; box-shadow:none; transform:none; }
 
@@ -272,8 +285,8 @@
   .secondary-btn{
     flex:1;
     background:#fff;
-    color:#1f3d8f;
-    border:1.5px solid #c6d0ea;
+    color:#000000;
+    border:1.5px solid #cccccc;
     padding:11px 14px;
     font-size:14.5px;
     font-weight:600;
@@ -282,7 +295,7 @@
     cursor:pointer;
     transition: background .15s, border-color .15s;
   }
-  .secondary-btn:hover{ background:#f2f5fc; border-color:#1f3d8f; }
+  .secondary-btn:hover{ background:#f4f4f4; border-color:#000000; }
   .secondary-btn:disabled{ opacity:0.55; cursor:default; }
 
   .list-panel-head{
@@ -368,7 +381,7 @@
   #bulkPrintBtn{
     width:100%;
     margin-top:16px;
-    background:#1f3d8f;
+    background:#000000;
     color:#fff;
     border:none;
     padding:11px 22px;
@@ -378,9 +391,9 @@
     border-radius:9px;
     cursor:pointer;
     transition: background .15s, box-shadow .15s;
-    box-shadow: 0 1px 2px rgba(31,61,143,.15);
+    box-shadow: 0 1px 2px rgba(0,0,0,.15);
   }
-  #bulkPrintBtn:hover{ background:#16296b; box-shadow: 0 4px 10px rgba(31,61,143,.25); }
+  #bulkPrintBtn:hover{ background:#2b2b2b; box-shadow: 0 4px 10px rgba(0,0,0,.25); }
   #bulkPrintBtn:disabled{ opacity:0.55; cursor:default; box-shadow:none; }
 
   .size-template{
@@ -411,7 +424,7 @@
     color:#3a4152;
   }
   .size-template input[type="radio"]{
-    accent-color:#1f3d8f;
+    accent-color:#000000;
     width:14px;
     height:14px;
     cursor:pointer;
@@ -464,7 +477,7 @@
     text-align:center;
     white-space:nowrap;
     transform: translate(-50%, -50%) rotate(-90deg);
-    color:#00308F;
+    color:#000000;
     font-family: 'Arial Black', Arial, sans-serif;
     font-weight:bold;
     font-style:italic;
@@ -509,12 +522,96 @@
     color:#000;
   }
 
+  #entryTable .half2{
+    color:inherit;
+  }
+
+  .blank-toggle{
+    padding:8px 10px;
+    flex:0 0 auto;
+  }
+  .blank-toggle label{ font-size:12px; }
+
+  /* second half left intentionally empty — keeps the exact cell footprint */
+  .sticker.blank > *{ visibility:hidden; }
+
+  #secondHalfBlock.blank-mode .half-fields,
+  #secondHalfBlock.blank-mode .size-template:not(.blank-toggle){
+    opacity:.45;
+    pointer-events:none;
+  }
+  /* the Leave Empty toggle itself must always stay clickable, even though it
+     lives inside .half-fields (next to M.R.P.) which gets disabled above */
+  #secondHalfBlock.blank-mode .blank-toggle{
+    opacity:1;
+    pointer-events:auto;
+  }
+
+  /* ---------- Halves layout: side-by-side columns when Stickers to Print = 12 ---------- */
+  .halves-row{
+    display:flex;
+    gap:20px;
+    align-items:flex-start;
+  }
+  .half-col{
+    flex:1;
+    min-width:0;
+  }
+  #secondHalfBlock{ display:none; }
+  .half-fields{
+    display:grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap:14px 12px;
+    margin-bottom:14px;
+  }
+  /* first half: 3-in-a-row (Article/Colour/MRP) when unsplit; drops to 2 cols
+     with MRP spanning the full width when Stickers to Print = 12 */
+  #toolbarCard.split-active #firstHalfFields{
+    grid-template-columns: 1fr 1fr;
+  }
+  #toolbarCard.split-active #firstHalfFields .price-field{
+    grid-column: 1 / -1;
+  }
+  /* second half only ever exists in split mode: Article/Colour share a row,
+     MRP + Leave Empty always sit on their own full-width row below */
+  #secondHalfBlock .half-fields{
+    grid-template-columns: 1fr 1fr;
+  }
+  #secondHalfBlock .half-fields .mrp-blank-row{
+    grid-column: 1 / -1;
+  }
+  .mrp-blank-row{
+    display:flex;
+    gap:10px;
+    align-items:flex-end;
+  }
+  .mrp-blank-row .field{ flex:1; min-width:0; }
+  .half-divider{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin:4px 0 16px 0;
+    color:#5c6478;
+    font-size:11px;
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:0.05em;
+    white-space:nowrap;
+  }
+  .half-divider::before,
+  .half-divider::after{
+    content:"";
+    height:1px;
+    background:#eef0f4;
+    flex:1;
+  }
+
   /* ---------- Confirm modal (replaces native browser confirm()) ---------- */
   .confirm-overlay{
     display:none;
     position:fixed;
     inset:0;
-    background:rgba(13,27,62,.45);
+    background:rgba(0,0,0,.45);
     align-items:center;
     justify-content:center;
     z-index:1000;
@@ -531,7 +628,7 @@
   .confirm-title{
     font-size:16.5px;
     font-weight:700;
-    color:#0d1b3e;
+    color:#000000;
     margin-bottom:8px;
   }
   .confirm-message{
@@ -603,12 +700,12 @@
 
   <div class="page-header-wrap">
     <div class="mode-toggle-row">
-      <span id="modeLabelSingle" class="active">Single Print</span>
+      <span id="modeLabelSingle">Single Print</span>
       <label class="toggle-switch">
-        <input type="checkbox" id="modeSwitch" onchange="applyMode()">
+        <input type="checkbox" id="modeSwitch" onchange="applyMode()" checked>
         <span class="track"></span>
       </label>
-      <span id="modeLabelBulk">Bulk Print</span>
+      <span id="modeLabelBulk" class="active">Bulk Print</span>
     </div>
     <div class="page-header">
       <h1 class="page-title">Export Sticker Print</h1>
@@ -620,18 +717,9 @@
 
   <div class="top-row">
 
-    <div class="toolbar">
+    <div class="toolbar" id="toolbarCard">
       <h2>Sticker Details</h2>
-      <div class="form-row">
-        <label class="field">Article No.
-          <input type="text" id="article" value="2005">
-        </label>
-        <label class="field">Colour
-          <input type="text" id="colour" value="BLACK">
-        </label>
-        <label class="field">M.R.P. (Rs.)
-          <input type="text" id="price" value="1099">
-        </label>
+      <div class="form-row cols-3">
         <label class="field">Month
           <select id="month">
             <option>JAN</option><option>FEB</option><option>MAR</option><option>APR</option>
@@ -648,23 +736,69 @@
       </div>
       <div class="form-row radio-row">
         <fieldset class="size-template">
-          <legend>Size Template</legend>
-          <label><input type="radio" name="sizeTemplate" value="7to11" checked> 7 to 11</label>
-          <label><input type="radio" name="sizeTemplate" value="7to10"> 7 to 10</label>
-          <label><input type="radio" name="sizeTemplate" value="9to11"> 9 to 11</label>
-        </fieldset>
-        <fieldset class="size-template">
           <legend>Stickers to Print</legend>
           <label><input type="radio" name="sheetCount" value="24" checked> 24</label>
           <label><input type="radio" name="sheetCount" value="12"> 12</label>
         </fieldset>
       </div>
+
+      <div class="halves-row" id="halvesRow">
+
+        <div class="half-col">
+          <div class="half-divider" id="firstHalfDivider" style="display:none;"><span>First Half</span></div>
+          <div class="half-fields" id="firstHalfFields">
+            <label class="field">Article No.
+              <input type="text" id="article" value="2005">
+            </label>
+            <label class="field">Colour
+              <input type="text" id="colour" value="BLACK">
+            </label>
+            <label class="field price-field">M.R.P. (Rs.)
+              <input type="text" id="price" value="1099">
+            </label>
+          </div>
+          <fieldset class="size-template">
+            <legend>Size Template</legend>
+            <label><input type="radio" name="sizeTemplate" value="7to11" checked> 7 to 11</label>
+            <label><input type="radio" name="sizeTemplate" value="7to10"> 7 to 10</label>
+            <label><input type="radio" name="sizeTemplate" value="9to11"> 9 to 11</label>
+          </fieldset>
+        </div>
+
+        <div class="half-col" id="secondHalfBlock">
+          <div class="half-divider"><span>Second Half</span></div>
+          <div class="half-fields">
+            <label class="field">Article No.
+              <input type="text" id="article2" value="2005">
+            </label>
+            <label class="field">Colour
+              <input type="text" id="colour2" value="BLACK">
+            </label>
+            <div class="mrp-blank-row">
+              <label class="field">M.R.P. (Rs.)
+                <input type="text" id="price2" value="1099">
+              </label>
+              <fieldset class="size-template blank-toggle">
+                <legend>Leave Empty</legend>
+                <label><input type="radio" name="secondBlank" value="no" checked> No</label>
+                <label><input type="radio" name="secondBlank" value="yes"> Yes</label>
+              </fieldset>
+            </div>
+          </div>
+          <fieldset class="size-template">
+            <legend>Size Template</legend>
+            <label><input type="radio" name="sizeTemplate2" value="7to11" checked> 7 to 11</label>
+            <label><input type="radio" name="sizeTemplate2" value="7to10"> 7 to 10</label>
+            <label><input type="radio" name="sizeTemplate2" value="9to11"> 9 to 11</label>
+          </fieldset>
+        </div>
+
+      </div>
+
       <div class="btn-row">
         <button id="addToListBtn" class="secondary-btn" onclick="addToList()">Add to List</button>
         <button id="printBtn" onclick="printSheet()">Print Sheet</button>
       </div>
-      <div class="hint">Grid lines will not be printed.</div>
-      <div class="hint">Built By Venkatram</div>
     </div>
 
     <div class="list-panel" id="listPanel">
@@ -751,7 +885,7 @@
   const sheet = document.getElementById('sheet');
   const stickers = [];
 
-  // build 24 sticker elements once (size number filled in later by applySizeTemplate)
+  // build 24 sticker elements once (values filled in later by refresh())
   for (let i = 0; i < 24; i++){
     const el = document.createElement('div');
     el.className = 'sticker';
@@ -770,45 +904,81 @@
     stickers.push(el);
   }
 
-  function applySizeTemplate(key){
-    const flat = sizeTemplates[key].flat();
-    stickers.forEach((st, i) => {
-      st.querySelector('.size-num').textContent = flat[i];
-    });
+  // reads the whole form; when "12" is picked the sheet is split into two halves
+  function getFormData(){
+    const split = document.querySelector('input[name="sheetCount"]:checked').value === '12';
+    return {
+      split: split,
+      secondBlank: document.querySelector('input[name="secondBlank"]:checked').value === 'yes',
+      month: document.getElementById('month').value,
+      year: document.getElementById('year').value,
+      quantity: Math.max(1, parseInt(document.getElementById('quantity').value, 10) || 1),
+      first: {
+        article: document.getElementById('article').value,
+        colour: document.getElementById('colour').value.toUpperCase(),
+        price: document.getElementById('price').value,
+        sizeTemplate: document.querySelector('input[name="sizeTemplate"]:checked').value
+      },
+      second: {
+        article: document.getElementById('article2').value,
+        colour: document.getElementById('colour2').value.toUpperCase(),
+        price: document.getElementById('price2').value,
+        sizeTemplate: document.querySelector('input[name="sizeTemplate2"]:checked').value
+      }
+    };
   }
 
-  document.querySelectorAll('input[name="sizeTemplate"]').forEach(radio => {
-    radio.addEventListener('change', () => applySizeTemplate(radio.value));
-  });
-
-  function applySheetCount(count){
-    // stickers 0-11 = first 4 rows (top half), 12-23 = last 4 rows (bottom half)
-    stickers.forEach((st, i) => {
-      st.style.display = (count === '12' && i >= 12) ? 'none' : '';
-    });
+  // expands a form/entry into the 24 per-sticker value sets for a sheet
+  function buildStickerData(d){
+    const flat1 = sizeTemplates[d.first.sizeTemplate].flat();
+    const flat2 = sizeTemplates[(d.second && d.second.sizeTemplate) || d.first.sizeTemplate].flat();
+    const out = [];
+    for (let i = 0; i < 24; i++){
+      const useSecond = d.split && i >= 12;
+      if (useSecond && d.secondBlank){
+        out.push({ blank: true });
+        continue;
+      }
+      const src = useSecond ? d.second : d.first;
+      out.push({
+        blank: false,
+        article: src.article,
+        colour: src.colour,
+        price: src.price,
+        month: d.month,
+        year: d.year,
+        size: useSecond ? flat2[i - 12] : flat1[i]
+      });
+    }
+    return out;
   }
-
-  document.querySelectorAll('input[name="sheetCount"]').forEach(radio => {
-    radio.addEventListener('change', () => applySheetCount(radio.value));
-  });
 
   function refresh(){
-    const vals = {
-      article: document.getElementById('article').value,
-      colour: document.getElementById('colour').value.toUpperCase(),
-      price: document.getElementById('price').value,
-      month: document.getElementById('month').value,
-      year: document.getElementById('year').value
-    };
-    stickers.forEach(st => {
-      Object.keys(vals).forEach(k => {
-        st.querySelectorAll(`[data-f="${k}"]`).forEach(node => node.textContent = vals[k]);
-      });
+    const form = getFormData();
+    const block = document.getElementById('secondHalfBlock');
+    block.style.display = form.split ? 'block' : 'none';
+    block.classList.toggle('blank-mode', form.secondBlank);
+    document.getElementById('toolbarCard').classList.toggle('split-active', form.split);
+    document.getElementById('firstHalfDivider').style.display = form.split ? 'flex' : 'none';
+    const data = buildStickerData(form);
+    stickers.forEach((st, i) => {
+      const v = data[i];
+      st.classList.toggle('blank', !!v.blank);
+      if (v.blank) return;
+      st.querySelectorAll('[data-f="article"]').forEach(n => n.textContent = v.article);
+      st.querySelectorAll('[data-f="colour"]').forEach(n => n.textContent = v.colour);
+      st.querySelectorAll('[data-f="price"]').forEach(n => n.textContent = v.price);
+      st.querySelectorAll('[data-f="month"]').forEach(n => n.textContent = v.month);
+      st.querySelectorAll('[data-f="year"]').forEach(n => n.textContent = v.year);
+      st.querySelector('.size-num').textContent = v.size;
     });
   }
 
-  ['article','colour','price','month','year'].forEach(id => {
+  ['article','colour','price','month','year','article2','colour2','price2'].forEach(id => {
     document.getElementById(id).addEventListener('input', refresh);
+  });
+  document.querySelectorAll('input[name="sizeTemplate"], input[name="sizeTemplate2"], input[name="sheetCount"], input[name="secondBlank"]').forEach(radio => {
+    radio.addEventListener('change', refresh);
   });
 
   // default month/year to current date, but editable
@@ -817,8 +987,6 @@
   document.getElementById('month').value = monthNames[now.getMonth()];
   document.getElementById('year').value = now.getFullYear();
 
-  applySizeTemplate('7to11');
-  applySheetCount('24');
   refresh();
 
   // ---- shared: hand a finished jsPDF document to the system print process ----
@@ -868,12 +1036,32 @@
   let sheetList = [];
   let nextEntryId = 1;
 
+  // entries saved before the split feature used a flat shape — bring them forward
+  function migrateEntry(e){
+    if (e && e.first) return e;
+    const half = {
+      article: e.article,
+      colour: e.colour,
+      price: e.price,
+      sizeTemplate: e.sizeTemplate
+    };
+    return {
+      id: e.id,
+      split: false,
+      month: e.month,
+      year: e.year,
+      quantity: e.quantity || 1,
+      first: half,
+      second: Object.assign({}, half)
+    };
+  }
+
   function loadList(){
     try {
       const raw = localStorage.getItem(STORAGE_KEY);
       if (raw){
         const parsed = JSON.parse(raw);
-        sheetList = parsed.list || [];
+        sheetList = (parsed.list || []).map(migrateEntry);
         nextEntryId = parsed.nextId || 1;
       }
     } catch (e) { /* ignore corrupted storage */ }
@@ -885,16 +1073,16 @@
   }
 
   function addToList(){
+    const form = getFormData();
     const entry = {
       id: nextEntryId++,
-      article: document.getElementById('article').value,
-      colour: document.getElementById('colour').value.toUpperCase(),
-      price: document.getElementById('price').value,
-      month: document.getElementById('month').value,
-      year: document.getElementById('year').value,
-      sizeTemplate: document.querySelector('input[name="sizeTemplate"]:checked').value,
-      sheetCount: document.querySelector('input[name="sheetCount"]:checked').value,
-      quantity: Math.max(1, parseInt(document.getElementById('quantity').value, 10) || 1)
+      split: form.split,
+      secondBlank: form.secondBlank,
+      month: form.month,
+      year: form.year,
+      quantity: form.quantity,
+      first: form.first,
+      second: form.second
     };
     sheetList.push(entry);
     saveList();
@@ -956,14 +1144,17 @@
       return;
     }
     sheetList.forEach((entry, idx) => {
+      const a = entry.first, b = entry.second;
+      const blank = entry.split && entry.secondBlank;
+      const two = v => !entry.split ? v.a : (blank ? `${v.a}<br><span class="half2">—</span>` : `${v.a}<br><span class="half2">${v.b}</span>`);
       const tr = document.createElement('tr');
       tr.innerHTML = `
         <td>${idx + 1}</td>
-        <td>${entry.article}</td>
-        <td>${entry.colour}</td>
-        <td>${entry.price}</td>
-        <td>${sizeTemplateLabels[entry.sizeTemplate]}</td>
-        <td>${entry.sheetCount}</td>
+        <td>${two({a: a.article, b: b.article})}</td>
+        <td>${two({a: a.colour, b: b.colour})}</td>
+        <td>${two({a: a.price, b: b.price})}</td>
+        <td>${two({a: sizeTemplateLabels[a.sizeTemplate], b: sizeTemplateLabels[b.sizeTemplate]})}</td>
+        <td>${entry.split ? (blank ? '12' : '12+12') : '24'}</td>
         <td>${entry.quantity || 1}</td>
         <td><button class="del-btn" onclick="deleteEntry(${entry.id})" title="Delete">×</button></td>
       `;
@@ -991,21 +1182,25 @@
     sheetEl.className = 'sheet';
     wrapper.appendChild(sheetEl);
 
-    const flat = sizeTemplates[entry.sizeTemplate].flat();
-    const count = entry.sheetCount === '12' ? 12 : 24;
-    for (let i = 0; i < count; i++){
+    const data = buildStickerData(entry);
+    for (let i = 0; i < 24; i++){
+      const v = data[i];
       const el = document.createElement('div');
       el.className = 'sticker';
+      if (v.blank){
+        sheetEl.appendChild(el);
+        continue;
+      }
       el.innerHTML = `
         <div class="export-strip"><span>EXPORT</span></div>
         <div class="info">
-          <div class="row article bordered">Article&nbsp;: <span class="val">${entry.article}</span></div>
-          <div class="row colour bordered">Colour&nbsp;: <span class="val">${entry.colour}</span></div>
-          <div class="row mrp bordered">M.R.P Rs. <span class="val">${entry.price}</span>/-</div>
+          <div class="row article bordered">Article&nbsp;: <span class="val">${v.article}</span></div>
+          <div class="row colour bordered">Colour&nbsp;: <span class="val">${v.colour}</span></div>
+          <div class="row mrp bordered">M.R.P Rs. <span class="val">${v.price}</span>/-</div>
           <div class="row tax">(Inclusive of all taxes)</div>
-          <div class="row mfg">Mfg.Date: <span class="month">${entry.month}</span> <span class="year">${entry.year}</span></div>
+          <div class="row mfg">Mfg.Date: <span class="month">${v.month}</span> <span class="year">${v.year}</span></div>
         </div>
-        <div class="size-num">${flat[i]}</div>
+        <div class="size-num">${v.size}</div>
       `;
       sheetEl.appendChild(el);
     }
@@ -1064,7 +1259,7 @@
     }
   }
 
-  // ---- Single Print / Bulk Print mode toggle (default: Single Print) ----
+  // ---- Single Print / Bulk Print mode toggle (default: Bulk Print) ----
   function applyMode(){
     const bulk = document.getElementById('modeSwitch').checked;
     const listPanel = document.getElementById('listPanel');
